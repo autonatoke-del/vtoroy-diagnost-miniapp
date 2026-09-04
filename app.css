@@ -30,6 +30,13 @@ h1 { margin: 2px 0 0; font-size: 18px; letter-spacing: -.02em; }
 .pulse { margin-left: auto; width: 9px; height: 9px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 6px rgba(188, 255, 54, .08), 0 0 18px var(--lime); }
 .hero > p { margin: 10px 0 24px; font-size: clamp(30px, 9vw, 52px); font-weight: 350; line-height: .98; letter-spacing: -.055em; }
 .hero strong { color: var(--lime); font-weight: 800; }
+.phase-rail { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 10px; }
+.phase { position: relative; min-height: 76px; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; padding: 11px; text-align: left; border: 1px solid var(--line); border-radius: 12px; background: rgba(14, 21, 27, .78); cursor: pointer; overflow: hidden; }
+.phase::after { content: ''; position: absolute; left: 0; right: 100%; bottom: 0; height: 3px; background: var(--lime); transition: right .18s ease; }
+.phase i { color: var(--cyan); font-size: 9px; font-style: normal; font-weight: 900; }
+.phase b { font-size: 11px; line-height: 1.1; }
+.phase.active { border-color: rgba(188, 255, 54, .55); background: linear-gradient(135deg, rgba(188, 255, 54, .12), rgba(14, 21, 27, .9)); }
+.phase.active::after { right: 0; }
 .vehicle { display: flex; gap: 12px; align-items: end; justify-content: space-between; padding: 18px; border: 1px solid var(--line); background: linear-gradient(135deg, rgba(20, 29, 36, .95), rgba(10, 15, 20, .95)); border-radius: 16px; }
 .label { color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .16em; }
 h2 { margin: 5px 0 0; font-size: 21px; }

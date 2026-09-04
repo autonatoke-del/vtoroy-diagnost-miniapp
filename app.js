@@ -3,10 +3,12 @@ const webApp = window.Telegram?.WebApp;
 const insideTelegram = Boolean(webApp?.initData);
 const params = new URLSearchParams(location.search);
 const vehicle = [params.get('make'), params.get('model'), params.get('year')].filter(Boolean).join(' ');
+const phase = ['analysis', 'guided_diagnosis', 'guided_repair'].includes(params.get('phase')) ? params.get('phase') : 'analysis';
 
-document.querySelector('#vehicle-name').textContent = vehicle || 'Новый выезд';
+document.querySelector('#vehicle-name').textContent = vehicle || 'Новая диагностика';
 document.querySelector('#dtc-count').textContent = /^\d+$/.test(params.get('dtc') || '') ? params.get('dtc') : '0';
 document.querySelector('#ready-state').textContent = params.get('ready') === '1' ? 'READY ДА' : params.get('ready') === '0' ? 'READY НЕТ' : 'READY —';
+document.querySelector(`[data-phase="${phase}"]`)?.classList.add('active');
 
 if (insideTelegram) {
   webApp.ready();
