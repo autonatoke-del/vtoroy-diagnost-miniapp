@@ -1,0 +1,10 @@
+{
+  "name": "Второй Диагност",
+  "short_name": "Диагност",
+  "description": "Второе мнение по машине от Не Бензин",
+  "lang": "ru",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070b0f",
+  "theme_color": "#070b0f"
+}
