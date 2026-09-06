@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#070b0f">
-  <meta name="description" content="Кабина Второго Диагноста: машина, диагностика, базы и отчёт в одном экране.">
+  <meta name="description" content="Второй Диагност: опишите машину и неисправность, добавьте фото, голос, скан или PDF.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070b0f'/%3E%3Cpath d='M23 15h11l-5 13h12L21 51l6-16H16z' fill='%23bcff36'/%3E%3C/svg%3E">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./app.css?v=4">
+  <link rel="stylesheet" href="./app.css?v=6">
   <title>Второй Диагност</title>
 </head>
 <body>
@@ -15,55 +15,53 @@
     <header class="topbar">
       <div class="mark" aria-hidden="true"><span>II</span></div>
       <div>
-        <div class="eyebrow">ДИАГНОСТИКА · LIVE</div>
-        <h1>Второй Диагност</h1>
+        <div class="eyebrow">ПОМОЩНИК ДИАГНОСТА</div>
+        <div class="product-name">Второй Диагност</div>
       </div>
-      <div class="pulse" title="Сервис доступен"></div>
     </header>
 
     <section class="hero">
-      <p>Не объясняет код.<br><strong>Проверяет твою версию.</strong></p>
-      <div class="phase-rail" aria-label="Этап диагностики">
-        <button class="phase" data-action="analysis" data-phase="analysis"><i>01</i><b>Анализ</b></button>
-        <button class="phase" data-action="guide" data-phase="guided_diagnosis"><i>02</i><b>Ведомая<br>диагностика</b></button>
-        <button class="phase" data-action="repair" data-phase="guided_repair"><i>03</i><b>Ведомый<br>ремонт</b></button>
-      </div>
-      <div class="vehicle" id="vehicle-card">
-        <div>
-          <span class="label">ТЕКУЩАЯ МАШИНА</span>
-          <h2 id="vehicle-name">Новая диагностика</h2>
-        </div>
-        <div class="telemetry">
-          <span><b id="dtc-count">0</b> DTC</span>
-          <span id="ready-state">READY —</span>
-        </div>
+      <p class="step">ШАГ 1</p>
+      <h1 id="hero-title">Какая машина и что произошло?</h1>
+      <p id="hero-copy" class="lead">Напишите одной фразой. Код ошибки необязателен.</p>
+    </section>
+
+    <section class="session" id="session-panel" hidden>
+      <span class="label">ТЕКУЩАЯ МАШИНА</span>
+      <h2 id="vehicle-name">Текущая диагностика</h2>
+      <p id="vehicle-facts">Продолжайте добавлять факты и замеры</p>
+      <div class="phase-rail" aria-label="Текущий этап">
+        <button class="phase" data-action="analysis" data-phase="analysis">Сводка</button>
+        <button class="phase" data-action="guide" data-phase="guided_diagnosis">Следующий тест</button>
+        <button class="phase" data-action="repair" data-phase="guided_repair">План ремонта</button>
       </div>
     </section>
 
     <section class="panel">
-      <label for="note">Что видишь сейчас?</label>
-      <textarea id="note" maxlength="2000" rows="3" placeholder="Код, замер или твоя версия"></textarea>
-      <button class="primary" data-note>Продолжить анализ <span>→</span></button>
-      <p class="hint">Фото, голос и PDF отправляй в чат — они попадут в эту же машину.</p>
+      <label for="note">Машина и неисправность</label>
+      <textarea id="note" maxlength="2000" rows="4" placeholder="Например: BMW X6, горит ошибка привода"></textarea>
+      <p class="example">Можно написать как говорите — бот сам уточнит недостающие данные.</p>
+      <button class="primary" data-note>Отправить диагносту <span>→</span></button>
+      <p id="send-status" class="status" aria-live="polite"></p>
+      <div class="next-step">
+        <b>Дальше</b>
+        <span>Бот ответит в чате. Фото, голос, скан и PDF отправляйте туда же — всё сохранится в одной машине.</span>
+      </div>
     </section>
 
-    <section class="grid" aria-label="Быстрые действия">
-      <button class="tile" data-action="new"><i>01</i><b>Новая диагностика</b><span>Чистая карточка машины</span></button>
-      <button class="tile" data-action="case"><i>02</i><b>Карточка</b><span>Факты и замеры</span></button>
-      <button class="tile" data-action="base"><i>03</i><b>База и схемы</b><span>TSB и первоисточники</span></button>
-      <button class="tile" data-action="diagpdf"><i>04</i><b>Диагностика PDF</b><span>Переслать или распечатать</span></button>
-      <button class="tile" data-action="repairpdf"><i>05</i><b>Ремонт PDF</b><span>Промежуточный план</span></button>
-      <button class="tile" data-action="program"><i>06</i><b>Программирование</b><span>ECU, доступ, VCI и контроль</span></button>
-      <button class="tile" data-action="equipment"><i>07</i><b>Оборудование</b><span>Подбор под машину и задачу</span></button>
-      <button class="tile wide" data-action="parts"><i>08</i><b>Запчасти</b><span>Поиск и сравнение через платформу</span></button>
+    <section class="case-actions" id="case-actions" hidden aria-label="Действия по текущей машине">
+      <h2>По текущей машине</h2>
+      <div class="grid">
+        <button class="tile" data-action="case"><b>Карточка</b><span>Что уже известно</span></button>
+        <button class="tile" data-action="guide"><b>Следующий тест</b><span>Что проверить сейчас</span></button>
+        <button class="tile" data-action="diagpdf"><b>Отчёт PDF</b><span>Скачать или переслать</span></button>
+        <button class="tile" data-action="parts"><b>Запчасти</b><span>Передать на поиск</span></button>
+      </div>
     </section>
 
-    <footer>
-      <span>ДВС</span><span>ГИБРИД</span><span>EV</span>
-      <p id="mode">Определяю режим…</p>
-    </footer>
+    <footer><span>ДВС</span><span>ГИБРИД</span><span>ЭЛЕКТРОМОБИЛЬ</span></footer>
   </main>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script type="module" src="./app.js?v=5"></script>
+  <script type="module" src="./app.js?v=6"></script>
 </body>
 </html>
