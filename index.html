@@ -4,21 +4,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#070b0f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Диагност">
   <meta name="description" content="Второй Диагност: опишите машину и неисправность, добавьте фото, голос, скан или PDF.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070b0f'/%3E%3Cpath d='M23 15h11l-5 13h12L21 51l6-16H16z' fill='%23bcff36'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./app.css?v=6">
+  <link rel="stylesheet" href="./app.css?v=7">
   <title>Второй Диагност</title>
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
-      <div class="mark" aria-hidden="true"><span>II</span></div>
-      <div>
-        <div class="eyebrow">ПОМОЩНИК ДИАГНОСТА</div>
-        <div class="product-name">Второй Диагност</div>
+      <div class="identity">
+        <div class="mark" aria-hidden="true"><span>II</span></div>
+        <div>
+          <div class="eyebrow">ПОМОЩНИК ДИАГНОСТА</div>
+          <div class="product-name">Второй Диагност</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="connection" id="connection-badge">В СЕТИ</span>
+        <button class="install-mini" id="install-mini" type="button" hidden>Установить</button>
       </div>
     </header>
+
+    <section class="offline-note" id="offline-note" hidden>
+      Связи нет. Черновик останется на телефоне — отправите, когда сеть вернётся.
+    </section>
 
     <section class="hero">
       <p class="step">ШАГ 1</p>
@@ -37,17 +52,26 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="install-card" id="install-card" hidden>
+      <div>
+        <span class="label">ANDROID</span>
+        <h2>Диагност как приложение</h2>
+        <p>Поставьте на главный экран. Черновик машины сохранится даже при обрыве связи.</p>
+      </div>
+      <button class="install-button" id="install-button" type="button">Установить</button>
+    </section>
+
+    <form class="panel" id="diagnostic-form">
       <label for="note">Машина и неисправность</label>
       <textarea id="note" maxlength="2000" rows="4" placeholder="Например: BMW X6, горит ошибка привода"></textarea>
       <p class="example">Можно написать как говорите — бот сам уточнит недостающие данные.</p>
-      <button class="primary" data-note>Отправить диагносту <span>→</span></button>
+      <button class="primary" data-note type="submit">Отправить диагносту <span>→</span></button>
       <p id="send-status" class="status" aria-live="polite"></p>
       <div class="next-step">
         <b>Дальше</b>
         <span>Бот ответит в чате. Фото, голос, скан и PDF отправляйте туда же — всё сохранится в одной машине.</span>
       </div>
-    </section>
+    </form>
 
     <section class="case-actions" id="case-actions" hidden aria-label="Действия по текущей машине">
       <h2>По текущей машине</h2>
@@ -62,6 +86,6 @@
     <footer><span>ДВС</span><span>ГИБРИД</span><span>ЭЛЕКТРОМОБИЛЬ</span></footer>
   </main>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script type="module" src="./app.js?v=6"></script>
+  <script type="module" src="./app.js?v=7"></script>
 </body>
 </html>

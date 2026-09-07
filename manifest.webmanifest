@@ -2,9 +2,28 @@
   "name": "Второй Диагност",
   "short_name": "Диагност",
   "description": "Второе мнение по машине: анализ, ведомая диагностика и ремонт",
+  "id": "/vtoroy-diagnost-miniapp/",
   "lang": "ru",
-  "start_url": "./",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#070b0f",
-  "theme_color": "#070b0f"
+  "theme_color": "#070b0f",
+  "categories": ["business", "utilities", "automotive"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
