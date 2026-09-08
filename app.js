@@ -1,4 +1,4 @@
-import { buildMiniAppPayload, miniAppTransport, readSessionState } from './runtime.js?v=1';
+import { buildCaptureShareText, buildMiniAppPayload, captureGuide, miniAppTransport, readSessionState } from './runtime.js?v=2';
 
 const BOT = 'nebenzin_field_diagnost_bot';
 const DRAFT_KEY = 'vtoroy-diagnost:draft:v1';
@@ -17,7 +17,20 @@ const offlineNote = document.querySelector('#offline-note');
 const installCard = document.querySelector('#install-card');
 const installButton = document.querySelector('#install-button');
 const installMini = document.querySelector('#install-mini');
+const captureInput = document.querySelector('#capture-input');
+const capturePreview = document.querySelector('#capture-preview');
+const captureImage = document.querySelector('#capture-image');
+const captureStatus = document.querySelector('#capture-status');
+const captureLabel = document.querySelector('#capture-label');
+const captureTitle = document.querySelector('#capture-title');
+const captureSteps = document.querySelector('#capture-steps');
+const captureOpenButton = document.querySelector('#capture-open');
+const sharePhotoButton = document.querySelector('#share-photo');
+const photoFallback = document.querySelector('#photo-fallback');
 let installPrompt = null;
+let captureMode = 'scanner';
+let captureFile = null;
+let captureObjectUrl = '';
 
 function setStatus(message = '', kind = '') {
   status.textContent = message;
@@ -54,6 +67,63 @@ function showInstall(visible) {
   const show = Boolean(visible && !transport.insideTelegram && !standalone);
   installCard.hidden = !show;
   installMini.hidden = !show;
+}
+
+function setCaptureStatus(message = '', kind = '') {
+  captureStatus.textContent = message;
+  captureStatus.dataset.kind = kind;
+}
+
+function renderCaptureGuide(mode = 'scanner') {
+  const nextMode = String(mode || '').toLowerCase();
+  captureMode = ['scanner', 'connector', 'board'].includes(nextMode) ? nextMode : 'scanner';
+  const guide = captureGuide(captureMode);
+  captureLabel.textContent = guide.label;
+  captureTitle.textContent = guide.title;
+  captureSteps.replaceChildren(...guide.steps.map((step) => {
+    const item = document.createElement('li');
+    item.textContent = step;
+    return item;
+  }));
+  document.querySelectorAll('[data-capture-mode]').forEach((button) => {
+    button.setAttribute('aria-pressed', button.dataset.captureMode === captureMode ? 'true' : 'false');
+  });
+}
+
+function clearCapturePreview() {
+  if (captureObjectUrl) URL.revokeObjectURL(captureObjectUrl);
+  captureObjectUrl = '';
+  captureFile = null;
+  captureImage.removeAttribute('src');
+  capturePreview.hidden = true;
+  sharePhotoButton.disabled = true;
+  photoFallback.hidden = true;
+}
+
+async function shareCapture() {
+  if (!captureFile) return;
+  const payload = { files: [captureFile], text: buildCaptureShareText(captureMode, session.vehicle) };
+  let canShareFiles = typeof navigator.share === 'function';
+  try {
+    if (canShareFiles && typeof navigator.canShare === 'function') canShareFiles = navigator.canShare({ files: payload.files });
+  } catch {
+    canShareFiles = false;
+  }
+  if (!canShareFiles) {
+    setCaptureStatus('Этот браузер не передаёт фото. Откройте чат и отправьте кадр туда.', 'error');
+    photoFallback.hidden = false;
+    return;
+  }
+  try {
+    setCaptureStatus('В системном меню выберите Telegram → Второй Диагност.', 'progress');
+    await navigator.share(payload);
+    setCaptureStatus('Android передал кадр выбранному приложению.', 'notice');
+  } catch (error) {
+    if (error?.name !== 'AbortError') {
+      setCaptureStatus('Не передалось. Откройте чат и отправьте кадр туда.', 'error');
+      photoFallback.hidden = false;
+    }
+  }
 }
 
 async function installApp() {
@@ -151,6 +221,27 @@ diagnosticForm.addEventListener('submit', (event) => {
 });
 
 noteInput.addEventListener('input', () => saveDraft(noteInput.value));
+document.querySelectorAll('[data-capture-mode]').forEach((button) => {
+  button.addEventListener('click', () => renderCaptureGuide(button.dataset.captureMode));
+});
+captureOpenButton.addEventListener('click', () => captureInput.click());
+captureInput.addEventListener('change', () => {
+  clearCapturePreview();
+  const file = captureInput.files?.[0];
+  if (!file) return;
+  if (!String(file.type || '').startsWith('image/')) {
+    setCaptureStatus('Нужен файл изображения.', 'error');
+    return;
+  }
+  captureFile = file;
+  captureObjectUrl = URL.createObjectURL(file);
+  captureImage.src = captureObjectUrl;
+  capturePreview.hidden = false;
+  sharePhotoButton.disabled = false;
+  photoFallback.hidden = true;
+  setCaptureStatus('Кадр готов. Проверьте резкость и маркировку.', 'notice');
+});
+sharePhotoButton.addEventListener('click', shareCapture);
 window.addEventListener('online', updateConnection);
 window.addEventListener('offline', updateConnection);
 window.addEventListener('beforeinstallprompt', (event) => {
@@ -169,4 +260,5 @@ window.visualViewport?.addEventListener('resize', () => {
   if (document.activeElement === noteInput) requestAnimationFrame(() => noteInput.scrollIntoView({ block: 'center' }));
 });
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=7').catch(() => {});
+renderCaptureGuide(captureMode);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=8').catch(() => {});

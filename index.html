@@ -12,7 +12,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070b0f'/%3E%3Cpath d='M23 15h11l-5 13h12L21 51l6-16H16z' fill='%23bcff36'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./app.css?v=7">
+  <link rel="stylesheet" href="./app.css?v=8">
   <title>Второй Диагност</title>
 </head>
 <body>
@@ -73,6 +73,42 @@
       </div>
     </form>
 
+    <section class="capture-card" id="capture-card">
+      <div class="capture-head">
+        <div>
+          <span class="label">ANDROID ФОТО-ПОМОЩНИК</span>
+          <h2>Подготовить читаемый кадр</h2>
+        </div>
+        <span class="local-only">ФАЙЛ НА ТЕЛЕФОНЕ</span>
+      </div>
+      <p class="capture-copy">Выберите, что снимаете. Страница подскажет ракурс, а отправку подтвердите сами в системном меню Android.</p>
+      <div class="capture-modes" aria-label="Что фотографируем">
+        <button type="button" data-capture-mode="scanner" aria-pressed="true">Сканер</button>
+        <button type="button" data-capture-mode="connector" aria-pressed="false">Разъём</button>
+        <button type="button" data-capture-mode="board" aria-pressed="false">Плата</button>
+      </div>
+      <div class="capture-guide">
+        <div class="focus-frame" aria-hidden="true"><span></span></div>
+        <div>
+          <span class="label" id="capture-label">СКАНЕР</span>
+          <h3 id="capture-title">Сними экран целиком</h3>
+          <ul id="capture-steps"></ul>
+        </div>
+      </div>
+      <figure class="capture-preview" id="capture-preview" hidden>
+        <img id="capture-image" alt="Предпросмотр подготовленного кадра">
+        <figcaption>Кадр никуда не загружен. Убедитесь, что нужные цифры и маркировки читаются.</figcaption>
+      </figure>
+      <input id="capture-input" type="file" accept="image/*" capture="environment" hidden>
+      <div class="capture-actions">
+        <button class="capture-button" id="capture-open" type="button">Снять или выбрать фото</button>
+        <button class="share-button" id="share-photo" type="button" disabled>Поделиться кадром</button>
+      </div>
+      <p class="status" id="capture-status" aria-live="polite"></p>
+      <a class="photo-fallback" id="photo-fallback" href="https://t.me/nebenzin_field_diagnost_bot" hidden>Открыть Второго Диагноста</a>
+      <p class="privacy-note">После нажатия Android покажет список приложений. Выберите Telegram → Второй Диагност. До этого фото остаётся только на вашем устройстве.</p>
+    </section>
+
     <section class="case-actions" id="case-actions" hidden aria-label="Действия по текущей машине">
       <h2>По текущей машине</h2>
       <div class="grid">
@@ -86,6 +122,6 @@
     <footer><span>ДВС</span><span>ГИБРИД</span><span>ЭЛЕКТРОМОБИЛЬ</span></footer>
   </main>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script type="module" src="./app.js?v=7"></script>
+  <script type="module" src="./app.js?v=8"></script>
 </body>
 </html>

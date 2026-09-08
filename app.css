@@ -55,7 +55,7 @@ button { min-height: 44px; color: inherit; touch-action: manipulation; }
 .step { margin: 0 0 10px; color: var(--lime); font-size: 11px; font-weight: 900; letter-spacing: .16em; }
 h1 { max-width: 590px; margin: 0; font-size: clamp(34px, 9vw, 54px); line-height: 1.01; letter-spacing: -.055em; }
 .lead { max-width: 520px; margin: 16px 0 22px; color: var(--muted); font-size: 16px; line-height: 1.5; }
-.panel, .session, .case-actions, .install-card {
+.panel, .session, .case-actions, .install-card, .capture-card {
   border: 1px solid var(--line);
   border-radius: 18px;
   background: rgba(14, 21, 27, .92);
@@ -65,6 +65,33 @@ h1 { max-width: 590px; margin: 0; font-size: clamp(34px, 9vw, 54px); line-height
 .install-card h2 { margin-top: 4px; font-size: 18px; }
 .install-card p { max-width: 430px; margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
 .install-button { flex: 0 0 auto; padding: 10px 14px; color: #101600; border: 0; border-radius: 10px; background: var(--lime); font-size: 12px; font-weight: 900; cursor: pointer; }
+.capture-card { margin-top: 14px; padding: 18px; background: linear-gradient(145deg, rgba(14, 21, 27, .96), rgba(8, 15, 19, .96)); }
+.capture-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.capture-head h2 { margin-top: 5px; font-size: 20px; }
+.local-only { flex: 0 0 auto; padding: 6px 8px; color: var(--cyan); border: 1px solid rgba(53, 222, 243, .35); border-radius: 999px; font-size: 8px; font-weight: 900; letter-spacing: .08em; white-space: nowrap; }
+.capture-copy { margin: 11px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.capture-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.capture-modes button { border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); font-size: 12px; font-weight: 800; cursor: pointer; }
+.capture-modes button[aria-pressed="true"] { color: var(--lime); border-color: rgba(184, 255, 53, .62); background: rgba(184, 255, 53, .08); }
+.capture-guide { display: grid; grid-template-columns: 112px 1fr; gap: 16px; align-items: center; margin-top: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #080d11; }
+.focus-frame { position: relative; aspect-ratio: 4 / 3; border: 1px solid rgba(53, 222, 243, .25); border-radius: 8px; background: linear-gradient(135deg, rgba(53, 222, 243, .05), rgba(184, 255, 53, .03)); }
+.focus-frame::before, .focus-frame::after, .focus-frame span::before, .focus-frame span::after { content: ""; position: absolute; width: 20px; height: 20px; border-color: var(--lime); }
+.focus-frame::before { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+.focus-frame::after { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; }
+.focus-frame span::before { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
+.focus-frame span::after { right: 8px; bottom: 8px; border-right: 2px solid; border-bottom: 2px solid; }
+.capture-guide h3 { margin: 5px 0 7px; font-size: 16px; }
+.capture-guide ul { margin: 0; padding-left: 17px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.capture-preview { margin: 12px 0 0; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #05080a; }
+.capture-preview img { display: block; width: 100%; max-height: 390px; object-fit: contain; }
+.capture-preview figcaption { padding: 10px 12px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+.capture-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.capture-button, .share-button { min-height: 48px; display: grid; place-items: center; padding: 10px 12px; border-radius: 11px; text-align: center; font-size: 12px; font-weight: 900; cursor: pointer; }
+.capture-button { color: var(--text); border: 1px solid rgba(53, 222, 243, .55); background: rgba(53, 222, 243, .07); }
+.share-button { color: #101600; border: 0; background: var(--lime); }
+.share-button:disabled { color: var(--muted); border: 1px solid var(--line); background: var(--panel-2); cursor: not-allowed; }
+.photo-fallback { display: inline-block; margin-top: 2px; color: var(--cyan); font-size: 12px; font-weight: 800; }
+.privacy-note { margin: 8px 0 0; color: #75848d; font-size: 10px; line-height: 1.45; }
 .panel { padding: 20px; }
 .panel label { display: block; margin-bottom: 10px; font-size: 16px; font-weight: 850; }
 textarea {
@@ -149,6 +176,9 @@ footer span { padding: 5px 7px; border: 1px solid var(--line); border-radius: 5p
   .install-card { align-items: flex-start; flex-direction: column; }
   .install-button { width: 100%; }
   .next-step { grid-template-columns: 1fr; gap: 6px; }
+  .capture-head { flex-direction: column; }
+  .capture-guide { grid-template-columns: 86px 1fr; gap: 12px; padding: 12px; }
+  .capture-actions { grid-template-columns: 1fr; }
   .phase-rail { grid-template-columns: 1fr; }
   .phase { min-height: 44px; }
 }
