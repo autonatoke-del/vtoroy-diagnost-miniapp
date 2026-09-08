@@ -85,6 +85,14 @@ h1 { max-width: 590px; margin: 0; font-size: clamp(34px, 9vw, 54px); line-height
 .capture-preview { margin: 12px 0 0; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #05080a; }
 .capture-preview img { display: block; width: 100%; max-height: 390px; object-fit: contain; }
 .capture-preview figcaption { padding: 10px 12px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+.capture-quality { margin-top: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: rgba(18, 28, 35, .75); }
+.capture-quality strong { display: block; font-size: 12px; line-height: 1.4; }
+.capture-quality strong[data-ready="true"] { color: var(--lime); }
+.capture-quality strong[data-ready="false"] { color: #ffd27a; }
+.quality-checks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.quality-checks span { padding: 5px 7px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 9px; font-weight: 850; }
+.quality-checks span[data-ok="true"] { color: var(--lime); border-color: rgba(184, 255, 53, .35); }
+.quality-checks span[data-ok="false"] { color: #ffd27a; border-color: rgba(255, 210, 122, .4); }
 .capture-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
 .capture-button, .share-button { min-height: 48px; display: grid; place-items: center; padding: 10px 12px; border-radius: 11px; text-align: center; font-size: 12px; font-weight: 900; cursor: pointer; }
 .capture-button { color: var(--text); border: 1px solid rgba(53, 222, 243, .55); background: rgba(53, 222, 243, .07); }
@@ -130,6 +138,7 @@ button:focus-visible, textarea:focus-visible { outline: 2px solid var(--cyan); o
 .status[data-kind="error"] { color: var(--error); }
 .status[data-kind="offline"] { color: var(--error); }
 .status[data-kind="progress"] { color: var(--cyan); }
+.status[data-kind="warning"] { color: #ffd27a; }
 .next-step { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
 .next-step b { color: var(--cyan); font-size: 12px; }
 .next-step span { color: var(--muted); font-size: 12px; line-height: 1.45; }

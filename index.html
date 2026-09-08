@@ -12,7 +12,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070b0f'/%3E%3Cpath d='M23 15h11l-5 13h12L21 51l6-16H16z' fill='%23bcff36'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./app.css?v=9">
+  <link rel="stylesheet" href="./app.css?v=10">
   <title>Второй Диагност</title>
 </head>
 <body>
@@ -99,6 +99,10 @@
         <img id="capture-image" alt="Предпросмотр подготовленного кадра">
         <figcaption>Кадр никуда не загружен. Убедитесь, что нужные цифры и маркировки читаются.</figcaption>
       </figure>
+      <div class="capture-quality" id="capture-quality" hidden>
+        <strong id="quality-summary"></strong>
+        <div class="quality-checks" id="quality-checks" aria-label="Проверка качества кадра"></div>
+      </div>
       <input id="camera-input" type="file" accept="image/*" capture="environment" hidden>
       <input id="gallery-input" type="file" accept="image/*" hidden>
       <div class="capture-actions">
@@ -124,6 +128,6 @@
     <footer><span>ДВС</span><span>ГИБРИД</span><span>ЭЛЕКТРОМОБИЛЬ</span></footer>
   </main>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script type="module" src="./app.js?v=9"></script>
+  <script type="module" src="./app.js?v=10"></script>
 </body>
 </html>

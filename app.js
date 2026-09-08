@@ -1,4 +1,4 @@
-import { buildCaptureShareText, buildMiniAppPayload, captureGuide, miniAppTransport, readSessionState } from './runtime.js?v=2';
+import { assessCaptureQuality, buildCaptureShareText, buildMiniAppPayload, captureGuide, miniAppTransport, readSessionState } from './runtime.js?v=3';
 
 const BOT = 'nebenzin_field_diagnost_bot';
 const DRAFT_KEY = 'vtoroy-diagnost:draft:v1';
@@ -22,6 +22,9 @@ const galleryInput = document.querySelector('#gallery-input');
 const capturePreview = document.querySelector('#capture-preview');
 const captureImage = document.querySelector('#capture-image');
 const captureStatus = document.querySelector('#capture-status');
+const captureQuality = document.querySelector('#capture-quality');
+const qualitySummary = document.querySelector('#quality-summary');
+const qualityChecks = document.querySelector('#quality-checks');
 const captureLabel = document.querySelector('#capture-label');
 const captureTitle = document.querySelector('#capture-title');
 const captureSteps = document.querySelector('#capture-steps');
@@ -98,8 +101,70 @@ function clearCapturePreview() {
   captureFile = null;
   captureImage.removeAttribute('src');
   capturePreview.hidden = true;
+  captureQuality.hidden = true;
+  qualitySummary.textContent = '';
+  qualityChecks.replaceChildren();
   sharePhotoButton.disabled = true;
   photoFallback.hidden = true;
+}
+
+async function measureCapture(file) {
+  if (typeof createImageBitmap !== 'function') return null;
+  const bitmap = await createImageBitmap(file);
+  try {
+    const maxSide = 480;
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (!context) return null;
+    context.drawImage(bitmap, 0, 0, width, height);
+    const pixels = context.getImageData(0, 0, width, height).data;
+    const gray = new Uint8Array(width * height);
+    let dark = 0;
+    let bright = 0;
+    for (let index = 0, pixel = 0; index < pixels.length; index += 4, pixel += 1) {
+      const value = Math.round(pixels[index] * 0.299 + pixels[index + 1] * 0.587 + pixels[index + 2] * 0.114);
+      gray[pixel] = value;
+      if (value < 28) dark += 1;
+      if (value > 245) bright += 1;
+    }
+    let edgeTotal = 0;
+    let edgeCount = 0;
+    for (let y = 1; y < height; y += 1) {
+      for (let x = 1; x < width; x += 1) {
+        const index = y * width + x;
+        edgeTotal += Math.abs(gray[index] - gray[index - 1]);
+        edgeTotal += Math.abs(gray[index] - gray[index - width]);
+        edgeCount += 2;
+      }
+    }
+    return {
+      width: bitmap.width,
+      height: bitmap.height,
+      darkRatio: dark / gray.length,
+      brightRatio: bright / gray.length,
+      edgeScore: edgeCount ? edgeTotal / edgeCount : 0,
+    };
+  } finally {
+    bitmap.close?.();
+  }
+}
+
+function renderCaptureQuality(result) {
+  if (!result) return;
+  qualitySummary.textContent = result.summary;
+  qualitySummary.dataset.ready = result.ready ? 'true' : 'false';
+  qualityChecks.replaceChildren(...result.checks.map((check) => {
+    const chip = document.createElement('span');
+    chip.dataset.ok = check.ok ? 'true' : 'false';
+    chip.textContent = `${check.ok ? '✓' : '!'} ${check.label}`;
+    return chip;
+  }));
+  captureQuality.hidden = false;
 }
 
 async function shareCapture() {
@@ -228,7 +293,7 @@ document.querySelectorAll('[data-capture-mode]').forEach((button) => {
 });
 cameraOpenButton.addEventListener('click', () => cameraInput.click());
 galleryOpenButton.addEventListener('click', () => galleryInput.click());
-function selectCaptureFile(input) {
+async function selectCaptureFile(input) {
   clearCapturePreview();
   const file = input.files?.[0];
   if (!file) return;
@@ -242,7 +307,16 @@ function selectCaptureFile(input) {
   capturePreview.hidden = false;
   sharePhotoButton.disabled = false;
   photoFallback.hidden = true;
-  setCaptureStatus('Кадр готов. Проверьте резкость и маркировку.', 'notice');
+  setCaptureStatus('Проверяю кадр на телефоне…', 'progress');
+  try {
+    const metrics = await measureCapture(file);
+    if (captureFile !== file) return;
+    const result = metrics ? assessCaptureQuality(metrics) : null;
+    renderCaptureQuality(result);
+    setCaptureStatus(result?.ready ? 'Кадр готов к отправке.' : 'Кадр можно отправить, но лучше проверить замечания.', result?.ready ? 'notice' : 'warning');
+  } catch {
+    if (captureFile === file) setCaptureStatus('Кадр готов. Проверьте резкость и маркировку.', 'notice');
+  }
 }
 cameraInput.addEventListener('change', () => selectCaptureFile(cameraInput));
 galleryInput.addEventListener('change', () => selectCaptureFile(galleryInput));

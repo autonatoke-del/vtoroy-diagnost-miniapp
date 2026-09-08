@@ -31,6 +31,27 @@ export function buildCaptureShareText(mode = 'scanner', vehicle = '') {
   return prefix ? `${prefix}. ${text}` : text;
 }
 
+export function assessCaptureQuality(metrics = {}) {
+  const width = Number(metrics.width) || 0;
+  const height = Number(metrics.height) || 0;
+  const edgeScore = Number(metrics.edgeScore) || 0;
+  const darkRatio = Number(metrics.darkRatio) || 0;
+  const brightRatio = Number(metrics.brightRatio) || 0;
+  const checks = [
+    { id: 'resolution', label: 'Детали', ok: Math.min(width, height) >= 720 },
+    { id: 'exposure', label: 'Свет', ok: darkRatio < 0.75 && brightRatio < 0.55 },
+    { id: 'focus', label: 'Резкость', ok: edgeScore >= 7 },
+  ];
+  const failed = checks.filter((check) => !check.ok);
+  return {
+    ready: failed.length === 0,
+    checks,
+    summary: failed.length
+      ? `Проверь или пересними: ${failed.map((check) => check.label.toLowerCase()).join(', ')}.`
+      : 'Кадр выглядит читаемым. Проверь цифры и маркировку.',
+  };
+}
+
 export function miniAppTransport(webApp) {
   const platform = String(webApp?.platform || '').toLowerCase();
   const insideTelegram = Boolean(webApp && platform && platform !== 'unknown');
