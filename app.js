@@ -17,14 +17,16 @@ const offlineNote = document.querySelector('#offline-note');
 const installCard = document.querySelector('#install-card');
 const installButton = document.querySelector('#install-button');
 const installMini = document.querySelector('#install-mini');
-const captureInput = document.querySelector('#capture-input');
+const cameraInput = document.querySelector('#camera-input');
+const galleryInput = document.querySelector('#gallery-input');
 const capturePreview = document.querySelector('#capture-preview');
 const captureImage = document.querySelector('#capture-image');
 const captureStatus = document.querySelector('#capture-status');
 const captureLabel = document.querySelector('#capture-label');
 const captureTitle = document.querySelector('#capture-title');
 const captureSteps = document.querySelector('#capture-steps');
-const captureOpenButton = document.querySelector('#capture-open');
+const cameraOpenButton = document.querySelector('#camera-open');
+const galleryOpenButton = document.querySelector('#gallery-open');
 const sharePhotoButton = document.querySelector('#share-photo');
 const photoFallback = document.querySelector('#photo-fallback');
 let installPrompt = null;
@@ -224,10 +226,11 @@ noteInput.addEventListener('input', () => saveDraft(noteInput.value));
 document.querySelectorAll('[data-capture-mode]').forEach((button) => {
   button.addEventListener('click', () => renderCaptureGuide(button.dataset.captureMode));
 });
-captureOpenButton.addEventListener('click', () => captureInput.click());
-captureInput.addEventListener('change', () => {
+cameraOpenButton.addEventListener('click', () => cameraInput.click());
+galleryOpenButton.addEventListener('click', () => galleryInput.click());
+function selectCaptureFile(input) {
   clearCapturePreview();
-  const file = captureInput.files?.[0];
+  const file = input.files?.[0];
   if (!file) return;
   if (!String(file.type || '').startsWith('image/')) {
     setCaptureStatus('Нужен файл изображения.', 'error');
@@ -240,7 +243,9 @@ captureInput.addEventListener('change', () => {
   sharePhotoButton.disabled = false;
   photoFallback.hidden = true;
   setCaptureStatus('Кадр готов. Проверьте резкость и маркировку.', 'notice');
-});
+}
+cameraInput.addEventListener('change', () => selectCaptureFile(cameraInput));
+galleryInput.addEventListener('change', () => selectCaptureFile(galleryInput));
 sharePhotoButton.addEventListener('click', shareCapture);
 window.addEventListener('online', updateConnection);
 window.addEventListener('offline', updateConnection);
@@ -261,4 +266,4 @@ window.visualViewport?.addEventListener('resize', () => {
 });
 
 renderCaptureGuide(captureMode);
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=8').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=9').catch(() => {});

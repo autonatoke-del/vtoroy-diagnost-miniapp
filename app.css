@@ -89,6 +89,7 @@ h1 { max-width: 590px; margin: 0; font-size: clamp(34px, 9vw, 54px); line-height
 .capture-button, .share-button { min-height: 48px; display: grid; place-items: center; padding: 10px 12px; border-radius: 11px; text-align: center; font-size: 12px; font-weight: 900; cursor: pointer; }
 .capture-button { color: var(--text); border: 1px solid rgba(53, 222, 243, .55); background: rgba(53, 222, 243, .07); }
 .share-button { color: #101600; border: 0; background: var(--lime); }
+.share-button { grid-column: 1 / -1; }
 .share-button:disabled { color: var(--muted); border: 1px solid var(--line); background: var(--panel-2); cursor: not-allowed; }
 .photo-fallback { display: inline-block; margin-top: 2px; color: var(--cyan); font-size: 12px; font-weight: 800; }
 .privacy-note { margin: 8px 0 0; color: #75848d; font-size: 10px; line-height: 1.45; }
@@ -179,6 +180,7 @@ footer span { padding: 5px 7px; border: 1px solid var(--line); border-radius: 5p
   .capture-head { flex-direction: column; }
   .capture-guide { grid-template-columns: 86px 1fr; gap: 12px; padding: 12px; }
   .capture-actions { grid-template-columns: 1fr; }
+  .share-button { grid-column: auto; }
   .phase-rail { grid-template-columns: 1fr; }
   .phase { min-height: 44px; }
 }

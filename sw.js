@@ -1,10 +1,10 @@
-const CACHE = 'vtoroy-diagnost-v8';
+const CACHE = 'vtoroy-diagnost-v9';
 const ASSETS = [
   './',
   './index.html',
-  './app.css?v=8',
+  './app.css?v=9',
   './runtime.js?v=2',
-  './app.js?v=8',
+  './app.js?v=9',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
