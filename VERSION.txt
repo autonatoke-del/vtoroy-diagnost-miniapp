@@ -1,0 +1,4 @@
+v13
+2026-09-12
+- aggressive Telegram swipe/back close
+- cache refresh for reinstall/update
