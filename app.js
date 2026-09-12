@@ -201,11 +201,54 @@ async function installApp() {
   installPrompt = null;
 }
 
+function closeTelegramMiniApp() {
+  if (!transport.insideTelegram || !webApp) return false;
+  try { webApp.BackButton?.hide?.(); } catch {}
+  try {
+    webApp.close();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function setupTelegramBackNavigation() {
+  if (!transport.insideTelegram || !webApp) return;
+  const backButton = webApp.BackButton;
+  const handleBack = () => {
+    try { webApp.HapticFeedback?.impactOccurred?.('light'); } catch {}
+    closeTelegramMiniApp();
+  };
+
+  // With BackButton visible Telegram routes both its UI back button and Android OS back to this callback.
+  try {
+    backButton?.show?.();
+    backButton?.onClick?.(handleBack);
+  } catch {}
+
+  // Avoid the swipe-down gesture leaving a minimized Mini App bar over the bot chat.
+  try { webApp.disableVerticalSwipes?.(); } catch {}
+  try { webApp.disableClosingConfirmation?.(); } catch {}
+
+  // Fallback for older Android WebViews that handle the system gesture as browser history first.
+  try {
+    const current = history.state && typeof history.state === 'object' ? history.state : {};
+    history.replaceState({ ...current, vtoroyRoot: true }, document.title, location.href);
+    history.pushState({ vtoroyBackGuard: true }, document.title, location.href);
+    window.addEventListener('popstate', closeTelegramMiniApp);
+  } catch {}
+
+  window.addEventListener('pagehide', () => {
+    try { backButton?.offClick?.(handleBack); } catch {}
+  }, { once: true });
+}
+
 if (transport.insideTelegram) {
   webApp.ready();
   webApp.expand();
   webApp.setHeaderColor?.('#070b0f');
   webApp.setBackgroundColor?.('#070b0f');
+  setupTelegramBackNavigation();
 }
 
 const draft = readDraft();
@@ -340,4 +383,4 @@ window.visualViewport?.addEventListener('resize', () => {
 });
 
 renderCaptureGuide(captureMode);
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=9').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=11').catch(() => {});
